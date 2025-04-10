@@ -1,0 +1,12 @@
+services:
+  godot:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    container_name: godot-container
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    environment:
+      - DISPLAY=:0
