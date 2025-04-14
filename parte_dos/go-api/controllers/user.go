@@ -29,6 +29,17 @@ func Register(c *gin.Context) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Could not create user"})
         return
     }
+    
+    // Create initial UserData record
+    userData := models.UserData{
+        UserID: user.ID,
+        Nombre: body.Username, // Default name is username
+        Edad: 0,
+        Estatura: 0,
+        Peso: 0,
+        Genero: "",
+    }
+    database.DB.Create(&userData)
 
     c.JSON(http.StatusOK, gin.H{"message": "User created"})
 }
@@ -45,14 +56,24 @@ func Login(c *gin.Context) {
     }
 
     var user models.User
-    database.DB.Where("username = ?", body.Username).First(&user)
+    result := database.DB.Where("username = ?", body.Username).First(&user)
+    
+    // Check if user exists
+    if result.Error != nil {
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+        return
+    }
 
+    // Verify password
     if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password)); err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
         return
     }
 
-    c.JSON(http.StatusOK, gin.H{"message": "Logged in", "user_id": user.ID})
+    c.JSON(http.StatusOK, gin.H{
+        "message": "Logged in",
+        "user_id": user.ID,
+    })
 }
 
 func UpdateUserData(c *gin.Context) {

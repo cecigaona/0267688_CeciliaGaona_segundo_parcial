@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { User, Lock, Heart } from 'lucide-react'
+import { User, Lock, Heart, Loader } from 'lucide-react'
 
 interface LoginProps {
   onLogin: (username: string, password: string) => void
+  error: string | null
+  isLoading: boolean
 }
 
-function Login({ onLogin }: LoginProps) {
+function Login({ onLogin, error, isLoading }: LoginProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -54,11 +56,25 @@ function Login({ onLogin }: LoginProps) {
             />
           </div>
 
+          {error && (
+            <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <span className="block sm:inline">{error}</span>
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center space-x-2"
+            disabled={isLoading}
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center space-x-2 disabled:bg-blue-300"
           >
-            <span>Sign In</span>
+            {isLoading ? (
+              <>
+                <Loader className="h-5 w-5 animate-spin" />
+                <span>Signing In...</span>
+              </>
+            ) : (
+              <span>Sign In</span>
+            )}
           </button>
         </form>
       </div>

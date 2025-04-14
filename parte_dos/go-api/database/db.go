@@ -3,10 +3,12 @@ package database
 import (
 	"fmt"
 	"os"
+	"time"
+
+	"yourproject/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"yourproject/models"
 )
 
 var DB *gorm.DB
@@ -22,7 +24,15 @@ func InitDB() {
 	)
 
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	for i := 0; i < 10; i++ {
+		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			break
+		}
+		fmt.Printf("Waiting for DB... (%d/10): %v\n", i+1, err)
+		time.Sleep(2 * time.Second)
+	}
+
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
