@@ -1,4 +1,4 @@
-# Examen Final – Sistema de Monitoreo de Salud
+# Segundo Parcial
 
 Este proyecto está dividido en dos partes:
 
