@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// SeedDatabase adds initial test data to the database
+// datos iniciales
 func SeedDatabase() {
 	// Create users with health data
 	seedUser("healthuser", "password123", "John Doe", 30, 180.5, 75.8, "Male")
@@ -18,7 +18,7 @@ func SeedDatabase() {
 	log.Println("✅ Database seeded successfully")
 }
 
-// seedUser creates a user with health data
+// inserta la info
 func seedUser(username, password, name string, age int, height, weight float64, gender string) {
 	var existingUser models.User
 	result := database.DB.Where("username = ?", username).First(&existingUser)
@@ -27,14 +27,14 @@ func seedUser(username, password, name string, age int, height, weight float64, 
 		return
 	}
 
-	// Hash the password
+	// hash contraseña
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
 		log.Printf("Error hashing password for user %s: %v\n", username, err)
 		return
 	}
 
-	// Create user
+	// crear usuario
 	user := models.User{
 		Username: username,
 		Password: string(hashedPassword),
@@ -45,7 +45,7 @@ func seedUser(username, password, name string, age int, height, weight float64, 
 		return
 	}
 
-	// Create health data for the user
+	// crear info
 	userData := models.UserData{
 		UserID:   user.ID,
 		Nombre:   name,
