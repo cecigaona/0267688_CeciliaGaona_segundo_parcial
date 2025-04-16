@@ -31,5 +31,9 @@ COPY --from=builder /app/server .
 # Expose port
 EXPOSE 8080
 
+COPY entrypoint.sh /root/entrypoint.sh
+RUN chmod +x /root/entrypoint.sh
+ENTRYPOINT ["/root/entrypoint.sh"]
+
 # Command to run
 CMD ["./server"]
